@@ -26,7 +26,7 @@ const sequelize = new Sequelize.Sequelize(DB_DATABASE, DB_USER, DB_PASSWORD, {
   benchmark: true,
   dialectOptions: {
     ssl: {
-      require: 'true',
+      require: 'false',
     },
   },
 });
