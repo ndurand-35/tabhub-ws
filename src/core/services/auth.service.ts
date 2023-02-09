@@ -8,7 +8,7 @@ import { DataStoredInToken, TokenData } from '@interfaces/auth.interface';
 import { User } from '@interfaces/users.interface';
 import { isEmpty } from '@utils/util';
 
-class AuthService {
+export class AuthService {
   public users = DB.Users;
 
   public async signup(userData: CreateUserDto): Promise<User> {
@@ -23,7 +23,7 @@ class AuthService {
     return createUserData;
   }
 
-  public async login(userData: CreateUserDto): Promise<{ cookie: string; findUser: User }> {
+  public async login(userData: CreateUserDto): Promise<{ cookie: string; findUser: User;token: string }> {
     if (isEmpty(userData)) throw new HttpException(400, 'userData is empty');
 
     const findUser: User = await this.users.findOne({ where: { email: userData.email } });
@@ -34,8 +34,8 @@ class AuthService {
 
     const tokenData = this.createToken(findUser);
     const cookie = this.createCookie(tokenData);
-
-    return { cookie, findUser };
+    const token = tokenData.token
+    return { cookie, findUser, token };
   }
 
   public async logout(userData: User): Promise<User> {
@@ -59,5 +59,3 @@ class AuthService {
     return `Authorization=${tokenData.token}; HttpOnly; Max-Age=${tokenData.expiresIn};`;
   }
 }
-
-export default AuthService;

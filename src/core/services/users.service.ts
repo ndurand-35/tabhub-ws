@@ -5,7 +5,7 @@ import { HttpException } from '@exceptions/HttpException';
 import { User } from '@interfaces/users.interface';
 import { isEmpty } from '@utils/util';
 
-class UserService {
+export class UserService {
   public users = DB.Users;
 
   public async findAllUser(): Promise<User[]> {
@@ -57,5 +57,3 @@ class UserService {
     return findUser;
   }
 }
-
-export default UserService;

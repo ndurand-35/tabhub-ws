@@ -1,5 +1,5 @@
 import { Sequelize, DataTypes, Model, Optional, NonAttribute, ForeignKey } from 'sequelize';
-import { Collection } from '@interfaces/collection.interface';
+import { Collection } from '@/core/utils/interfaces/collections.interface';
 import { UserModel } from '@models/users.model';
 
 export type CollectionCreationAttributes = Optional<Collection, 'id' | 'name'>;
@@ -33,6 +33,10 @@ export default function (sequelize: Sequelize): typeof CollectionModel {
         allowNull: false,
         type: DataTypes.STRING(100),
       },
+      userId: {
+        allowNull : true,
+        type: DataTypes.INTEGER
+      }
     },
     {
       tableName: 'collection',
