@@ -18,8 +18,8 @@ class CollectionRoute implements Routes {
     this.router.get(`${this.path}`,authMiddleware, this.collectionController.getCollection);
     // this.router.get(`${this.path}/:id(\\d+)`, this.usersController.getUserById);
     this.router.post(`${this.path}`, authMiddleware, validationMiddleware(CreateCollectionDto, 'body'), this.collectionController.createCollection);
-    //this.router.put(`${this.path}/:id(\\d+)`, validationMiddleware(CreateUserDto, 'body', true), this.usersController.updateUser);
-    //this.router.delete(`${this.path}/:id(\\d+)`, this.usersController.deleteUser);
+    this.router.put(`${this.path}/:id(\\d+)`, validationMiddleware(CreateCollectionDto, 'body', true), this.collectionController.updateCollection);
+    this.router.delete(`${this.path}/:id(\\d+)`, this.collectionController.deleteCollection);
   }
 }
 
