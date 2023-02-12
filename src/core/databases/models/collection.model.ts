@@ -1,6 +1,7 @@
 import { Sequelize, DataTypes, Model, Optional, NonAttribute, ForeignKey } from 'sequelize';
 import { Collection } from '@/core/utils/interfaces/collections.interface';
 import { UserModel } from '@models/users.model';
+import { BookmarkModel } from './bookmark.model';
 
 export type CollectionCreationAttributes = Optional<Collection, 'id' | 'name'>;
 
@@ -34,14 +35,15 @@ export default function (sequelize: Sequelize): typeof CollectionModel {
         type: DataTypes.STRING(100),
       },
       userId: {
-        allowNull : true,
-        type: DataTypes.INTEGER
-      }
+        allowNull: true,
+        type: DataTypes.INTEGER,
+      },
     },
     {
       tableName: 'collection',
       sequelize,
     },
   );
+  CollectionModel.hasMany(BookmarkModel, { sourceKey: 'id', foreignKey: 'collectionId', as: 'bookmarks' });
   return CollectionModel;
 }

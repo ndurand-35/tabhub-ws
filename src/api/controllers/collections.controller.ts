@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
-import { CreateCollectionDto } from '@dtos/collections.dto';
+import { CreateCollectionDto, UpdateCollectionDto } from '@dtos/collections.dto';
 import { CollectionService } from '@services/index.service';
- import { User,Collection,RequestWithUser } from '@/core/utils/interfaces/index.interface';
+import { User, Collection, RequestWithUser } from '@/core/utils/interfaces/index.interface';
 
 class CollectionsController {
   public collectionService = new CollectionService();
@@ -17,22 +17,22 @@ class CollectionsController {
     }
   };
 
-  // public getUserById = async (req: Request, res: Response, next: NextFunction) => {
-  //   try {
-  //     const userId = Number(req.params.id);
-  //     const findOneUserData: User = await this.userService.findUserById(userId);
+  public getCollectionById = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userId = Number(req.params.id);
+      const findOneCollectionData: Collection = await this.collectionService.findCollectionById(userId);
 
-  //     res.status(200).json({ data: findOneUserData, message: 'findOne' });
-  //   } catch (error) {
-  //     next(error);
-  //   }
-  // };
+      res.status(200).json({ data: findOneCollectionData, message: 'findOne' });
+    } catch (error) {
+      next(error);
+    }
+  };
 
   public createCollection = async (req: RequestWithUser, res: Response, next: NextFunction) => {
     try {
       const userData: User = req.user;
       const collectionData: CreateCollectionDto = req.body;
-      const createCollectionData: Collection = await this.collectionService.createCollection(collectionData,userData);
+      const createCollectionData: Collection = await this.collectionService.createCollection(collectionData, userData);
 
       res.status(201).json({ data: createCollectionData, message: 'created' });
     } catch (error) {
@@ -43,7 +43,7 @@ class CollectionsController {
   public updateCollection = async (req: RequestWithUser, res: Response, next: NextFunction) => {
     try {
       const collectionId = Number(req.params.id);
-      const collectionData: CreateCollectionDto = req.body;
+      const collectionData: UpdateCollectionDto = req.body;
       const updateCollectionData: Collection = await this.collectionService.updateCollection(collectionId, collectionData);
 
       res.status(200).json({ data: updateCollectionData, message: 'updated' });

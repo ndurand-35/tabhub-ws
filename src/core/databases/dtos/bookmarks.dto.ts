@@ -1,11 +1,11 @@
 import { IsString, IsNumber } from 'class-validator';
 
-export class CreateCollectionDto {
+export class CreateBookmarkDto {
   @IsString()
-  public name: string;
+  public link: string;
 }
 
-export class UpdateCollectionDto {
+export class UpdateBookmarkDto {
   @IsNumber()
   public id: number;
 
