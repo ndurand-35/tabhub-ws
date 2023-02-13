@@ -32,16 +32,16 @@ export class BookmarkService {
     return createBookmarkData;
   }
 
-  // public async updateBookmark(bookmarkId: number, bookmarkData: UpdateBookmarkDto): Promise<Bookmark> {
-  //   if (isEmpty(bookmarkData)) throw new HttpException(400, 'bookmarkData is empty');
+  public async updateBookmark(bookmarkId: number, bookmarkData: UpdateBookmarkDto): Promise<Bookmark> {
+    if (isEmpty(bookmarkData)) throw new HttpException(400, 'bookmarkData is empty');
 
-  //   const findBookmark: Bookmark = await this.bookmarks.findByPk(bookmarkId);
-  //   if (!findBookmark) throw new HttpException(409, "User doesn't exist");
-  //   await this.bookmarks.update({ ...bookmarkData }, { where: { id: bookmarkId } });
+    const findBookmark: Bookmark = await this.bookmarks.findByPk(bookmarkId);
+    if (!findBookmark) throw new HttpException(409, "Bookmark doesn't exist");
+    await this.bookmarks.update({ ...bookmarkData }, { where: { id: bookmarkId } });
 
-  //   const updateBookmark: Bookmark = await this.bookmarks.findByPk(bookmarkId);
-  //   return updateBookmark;
-  // }
+    const updateBookmark: Bookmark = await this.bookmarks.findByPk(bookmarkId);
+    return updateBookmark;
+  }
 
   // public async deleteBookmark(bookmarkId: number): Promise<Bookmark> {
   //   if (isEmpty(bookmarkId)) throw new HttpException(400, 'bookmarkId is empty');

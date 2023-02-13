@@ -1,10 +1,14 @@
 import { NextFunction, Request, Response } from 'express';
-import { CreateBookmarkDto } from '@dtos/bookmarks.dto';
-import { BookmarkService } from '@services/index.service';
-import { User, Bookmark, RequestWithUser } from '@/core/utils/interfaces/index.interface';
+import { CreateBookmarkDto ,UpdateBookmarkDto} from '@dtos/bookmarks.dto';
+import { BookmarkService,CollectionService } from '@services/index.service';
+import { User, Bookmark, RequestWithUser, Collection } from '@/core/utils/interfaces/index.interface';
+import { getLinkData } from '@/core/utils/util';
+
+
 
 class BookmarkController {
   public bookmarkService = new BookmarkService();
+  public collectionService = new CollectionService();
 
   // public getCollection = async (req: RequestWithUser, res: Response, next: NextFunction) => {
   //   try {
@@ -30,27 +34,31 @@ class BookmarkController {
 
   public createBookmark = async (req: RequestWithUser, res: Response, next: NextFunction) => {
     try {
-      const userData: User = req.user;
       const bookmarkData: CreateBookmarkDto = req.body;
-      const createCBookmarkData: Bookmark = await this.bookmarkService.createBookmark(bookmarkData, userData);
 
-      res.status(201).json({ data: createCBookmarkData, message: 'created' });
+      const findOneCollectionData: Collection = await this.collectionService.findCollectionById(bookmarkData.collectionId);
+
+      /* Récupération d'information à partir du lien */
+      const enhancedBookmarkData = await getLinkData(bookmarkData)
+
+      const createBookmarkData: Bookmark = await this.bookmarkService.createBookmark(enhancedBookmarkData, findOneCollectionData);
+      res.status(201).json({ data: createBookmarkData, message: 'created' });
     } catch (error) {
       next(error);
     }
   };
 
-  // public updateCollection = async (req: RequestWithUser, res: Response, next: NextFunction) => {
-  //   try {
-  //     const bookmarkId = Number(req.params.id);
-  //     const bookmarkData: UpdateCollectionDto = req.body;
-  //     const updateCollectionData: Collection = await this.bookmarkService.updateCollection(bookmarkId, bookmarkData);
+  public updateBookmark = async (req: RequestWithUser, res: Response, next: NextFunction) => {
+    try {
+      const bookmarkId = Number(req.params.id);
+      const bookmarkData: UpdateBookmarkDto = req.body;
+      const updateCollectionData: Collection = await this.bookmarkService.updateBookmark(bookmarkId, bookmarkData);
 
-  //     res.status(200).json({ data: updateCollectionData, message: 'updated' });
-  //   } catch (error) {
-  //     next(error);
-  //   }
-  // };
+      res.status(200).json({ data: updateCollectionData, message: 'updated' });
+    } catch (error) {
+      next(error);
+    }
+  };
 
   // public deleteCollection = async (req: Request, res: Response, next: NextFunction) => {
   //   try {

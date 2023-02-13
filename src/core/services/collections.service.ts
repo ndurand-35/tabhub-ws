@@ -16,7 +16,7 @@ export class CollectionService {
   public async findCollectionById(collectionId: number): Promise<Collection> {
     if (isEmpty(collectionId)) throw new HttpException(400, 'CollectionId is empty');
 
-    const findCollection: Collection = await this.collections.findByPk(collectionId);
+    const findCollection: Collection = await this.collections.findByPk(collectionId,{include : [{model: DB.Bookmark, as :  'bookmarks'}]});
     if (!findCollection) throw new HttpException(409, "Collection doesn't exist");
 
     return findCollection;

@@ -19,8 +19,8 @@ class CollectionsController {
 
   public getCollectionById = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const userId = Number(req.params.id);
-      const findOneCollectionData: Collection = await this.collectionService.findCollectionById(userId);
+      const collectionId = Number(req.params.id);
+      const findOneCollectionData: Collection = await this.collectionService.findCollectionById(collectionId);
 
       res.status(200).json({ data: findOneCollectionData, message: 'findOne' });
     } catch (error) {

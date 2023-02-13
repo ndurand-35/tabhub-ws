@@ -1,8 +1,15 @@
-import { IsString, IsNumber } from 'class-validator';
+import { IsString, IsNumber, ValidateIf } from 'class-validator';
 
 export class CreateBookmarkDto {
   @IsString()
   public link: string;
+
+  @IsString()
+  @ValidateIf((object, value) => value !== undefined)
+  public title?: string| undefined;
+
+  @IsNumber()
+  public collectionId: number;
 }
 
 export class UpdateBookmarkDto {
@@ -10,5 +17,12 @@ export class UpdateBookmarkDto {
   public id: number;
 
   @IsString()
-  public name: string;
+  public link: string;
+
+  @IsString()
+  @ValidateIf((object, value) => value !== undefined)
+  public title?: string | undefined;
+  
+  @IsNumber()
+  public collectionId: number;
 }

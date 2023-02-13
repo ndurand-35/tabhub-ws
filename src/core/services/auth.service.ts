@@ -23,7 +23,7 @@ export class AuthService {
     return createUserData;
   }
 
-  public async login(userData: CreateUserDto): Promise<{ cookie: string; findUser: User;token: string }> {
+  public async login(userData: CreateUserDto): Promise<{ findUser: User;token: string }> {
     if (isEmpty(userData)) throw new HttpException(400, 'userData is empty');
 
     const findUser: User = await this.users.findOne({ where: { email: userData.email } });
@@ -33,9 +33,8 @@ export class AuthService {
     if (!isPasswordMatching) throw new HttpException(409, 'Password not matching');
 
     const tokenData = this.createToken(findUser);
-    const cookie = this.createCookie(tokenData);
     const token = tokenData.token
-    return { cookie, findUser, token };
+    return { findUser, token };
   }
 
   public async logout(userData: User): Promise<User> {
@@ -55,7 +54,7 @@ export class AuthService {
     return { expiresIn, token: sign(dataStoredInToken, secretKey, { expiresIn }) };
   }
 
-  public createCookie(tokenData: TokenData): string {
-    return `Authorization=${tokenData.token}; HttpOnly; Max-Age=${tokenData.expiresIn};`;
-  }
+  // public createCookie(tokenData: TokenData): string {
+  //   return `Authorization=${tokenData.token}; HttpOnly; Max-Age=${tokenData.expiresIn};`;
+  // }
 }

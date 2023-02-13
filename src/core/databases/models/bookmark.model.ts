@@ -40,7 +40,7 @@ export default function (sequelize: Sequelize): typeof BookmarkModel {
         type: DataTypes.STRING(100),
       },
       description: {
-        allowNull: false,
+        allowNull: true,
         type: DataTypes.TEXT,
       },
       collectionId: {

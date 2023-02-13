@@ -1,3 +1,6 @@
+import axios from 'axios';
+import {JSDOM} from 'jsdom'
+import { CreateBookmarkDto } from '@/core/databases/dtos/bookmarks.dto';
 /**
  * @method isEmpty
  * @param {String | Number | Object} value
@@ -17,3 +20,15 @@ export const isEmpty = (value: string | number | object): boolean => {
     return false;
   }
 };
+
+export const getLinkData = async (bookmarkData: CreateBookmarkDto): Promise<CreateBookmarkDto> => {
+  try {
+    let response = await axios.get(bookmarkData.link)
+    const document = new JSDOM(`${response.data}`).window.document;
+    bookmarkData.title = document.title
+  } catch (err) {
+    let domain = (new URL(bookmarkData.link));
+    bookmarkData.title = domain.hostname.split('.')[0]
+  }
+  return bookmarkData
+}
