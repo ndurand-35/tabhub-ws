@@ -1,7 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 import { CreateCollectionDto, UpdateCollectionDto } from '@dtos/collections.dto';
 import { CollectionService } from '@services/index.service';
-import { User, Collection, RequestWithUser } from '@/core/utils/interfaces/index.interface';
+import { User, Collection, RequestWithUser, CollectionType } from '@/core/utils/interfaces/index.interface';
+import { HttpException } from '@/core/utils/exceptions/HttpException';
 
 class CollectionsController {
   public collectionService = new CollectionService();
@@ -21,6 +22,23 @@ class CollectionsController {
     try {
       const collectionId = Number(req.params.id);
       const findOneCollectionData: Collection = await this.collectionService.findCollectionById(collectionId);
+
+      res.status(200).json({ data: findOneCollectionData, message: 'findOne' });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public getCollectionByType = async (req: RequestWithUser, res: Response, next: NextFunction) => {
+    try {
+      let collectionType: CollectionType;
+      if (Object.values(CollectionType).some((col: string) => col === req.params.type))
+        collectionType = <CollectionType> <unknown>req.params.type;
+      else
+        throw new HttpException(400, 'collectionType is invalid');
+      
+      const userData: User = req.user;
+      const findOneCollectionData: Collection = await this.collectionService.findCollectionByType(collectionType,userData);
 
       res.status(200).json({ data: findOneCollectionData, message: 'findOne' });
     } catch (error) {

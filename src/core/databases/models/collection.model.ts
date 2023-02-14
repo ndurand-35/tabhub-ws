@@ -1,5 +1,5 @@
 import { Sequelize, DataTypes, Model, Optional, NonAttribute, ForeignKey } from 'sequelize';
-import { Collection } from '@/core/utils/interfaces/collections.interface';
+import { Collection,CollectionType } from '@/core/utils/interfaces/collections.interface';
 import { UserModel } from '@models/users.model';
 import { BookmarkModel } from './bookmark.model';
 
@@ -8,6 +8,8 @@ export type CollectionCreationAttributes = Optional<Collection, 'id' | 'name'>;
 export class CollectionModel extends Model<Collection, CollectionCreationAttributes> implements Collection {
   public id: number;
   public name: string;
+  public icon: string;
+  public collectionType: CollectionType;
 
   // foreign keys are automatically added by associations methods (like Collection.belongsTo)
   // by branding them using the `ForeignKey` type, `Collection.init` will know it does not need to
@@ -33,6 +35,15 @@ export default function (sequelize: Sequelize): typeof CollectionModel {
       name: {
         allowNull: false,
         type: DataTypes.STRING(100),
+      },
+      icon: {
+        allowNull: true,
+        type: DataTypes.STRING(50),
+      },
+      collectionType: {
+        allowNull: true,
+        type: DataTypes.ENUM(...Object.keys(CollectionType)),
+
       },
       userId: {
         allowNull: true,

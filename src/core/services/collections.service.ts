@@ -2,14 +2,14 @@ import { hash } from 'bcrypt';
 import DB from '@databases';
 import { CreateCollectionDto, UpdateCollectionDto } from '@dtos/collections.dto';
 import { HttpException } from '@exceptions/HttpException';
-import { Collection, User } from '@interfaces/index.interface';
+import { Collection, CollectionType, User } from '@interfaces/index.interface';
 import { isEmpty } from '@utils/util';
 
 export class CollectionService {
   public collections = DB.Collection;
 
   public async findMyCollection(userData: User): Promise<Collection[]> {
-    const myCollection: Collection[] = await this.collections.findAll({ where: { userId: userData.id } });
+    const myCollection: Collection[] = await this.collections.findAll({ where: { userId: userData.id, collectionType : null } });
     return myCollection;
   }
 
@@ -18,6 +18,19 @@ export class CollectionService {
 
     const findCollection: Collection = await this.collections.findByPk(collectionId,{include : [{model: DB.Bookmark, as :  'bookmarks'}]});
     if (!findCollection) throw new HttpException(409, "Collection doesn't exist");
+
+    return findCollection;
+  }
+
+  public async findCollectionByType(collectionType: CollectionType, userData: User): Promise<Collection> {
+    if (isEmpty(collectionType)) throw new HttpException(400, 'collectionType is empty');
+
+    let findCollection: Collection = await this.collections.findOne(
+      { where: { userId: userData.id, collectionType: collectionType }, include: [{ model: DB.Bookmark, as: 'bookmarks' }] }
+    );
+    if (!findCollection) {
+      findCollection = await this.createCollection({ name : collectionType.toString(), collectionType}, userData)
+    }  //throw new HttpException(409, "Collection doesn't exist");
 
     return findCollection;
   }

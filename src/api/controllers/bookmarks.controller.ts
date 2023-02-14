@@ -52,24 +52,24 @@ class BookmarkController {
     try {
       const bookmarkId = Number(req.params.id);
       const bookmarkData: UpdateBookmarkDto = req.body;
-      const updateCollectionData: Collection = await this.bookmarkService.updateBookmark(bookmarkId, bookmarkData);
+      const updateBookmarkData: Bookmark = await this.bookmarkService.updateBookmark(bookmarkId, bookmarkData);
 
-      res.status(200).json({ data: updateCollectionData, message: 'updated' });
+      res.status(200).json({ data: updateBookmarkData, message: 'updated' });
     } catch (error) {
       next(error);
     }
   };
 
-  // public deleteCollection = async (req: Request, res: Response, next: NextFunction) => {
-  //   try {
-  //     const bookmarkId = Number(req.params.id);
-  //     const deleteCollectionData: Collection = await this.bookmarkService.deleteCollection(bookmarkId);
+  public deleteBookmark = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const bookmarkId = Number(req.params.id);
+      const deleteBookmarkData: Bookmark = await this.bookmarkService.deleteBookmark(bookmarkId);
 
-  //     res.status(200).json({ data: deleteCollectionData, message: 'deleted' });
-  //   } catch (error) {
-  //     next(error);
-  //   }
-  // };
+      res.status(200).json({ data: deleteBookmarkData, message: 'deleted' });
+    } catch (error) {
+      next(error);
+    }
+  };
 }
 
 export default BookmarkController;
