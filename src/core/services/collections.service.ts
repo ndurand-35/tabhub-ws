@@ -9,7 +9,10 @@ export class CollectionService {
   public collections = DB.Collection;
 
   public async findMyCollection(userData: User): Promise<Collection[]> {
-    const myCollection: Collection[] = await this.collections.findAll({ where: { userId: userData.id, collectionType : null } });
+    const myCollection: Collection[] = await this.collections.findAll({
+      where: { userId: userData.id, collectionType: null, parentId : null },
+      include: [{ model: DB.Collection, as: 'children'}]
+    });
     return myCollection;
   }
 

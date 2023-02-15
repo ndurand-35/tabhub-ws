@@ -11,13 +11,10 @@ export class CollectionModel extends Model<Collection, CollectionCreationAttribu
   public icon: string;
   public collectionType: CollectionType;
 
-  // foreign keys are automatically added by associations methods (like Collection.belongsTo)
-  // by branding them using the `ForeignKey` type, `Collection.init` will know it does not need to
-  // display an error if userId is missing.
-  public userId: ForeignKey<UserModel['id']>;
+  //public parentId: ForeignKey<CollectionModel['id']>;
+  public parent: NonAttribute<CollectionModel>;
 
-  // `user` is an eagerly-loaded association.
-  // We tag it as `NonAttribute`
+  public userId: ForeignKey<UserModel['id']>;
   public user: NonAttribute<UserModel>;
 
   public readonly createdAt!: Date;
@@ -45,6 +42,10 @@ export default function (sequelize: Sequelize): typeof CollectionModel {
         type: DataTypes.ENUM(...Object.keys(CollectionType)),
 
       },
+      parentId: {
+        allowNull: true,
+        type: DataTypes.INTEGER,
+      },
       userId: {
         allowNull: true,
         type: DataTypes.INTEGER,
@@ -55,6 +56,7 @@ export default function (sequelize: Sequelize): typeof CollectionModel {
       sequelize,
     },
   );
+  CollectionModel.hasMany(CollectionModel, {sourceKey: 'id',foreignKey : 'parentId', as : 'children'});
   CollectionModel.hasMany(BookmarkModel, { sourceKey: 'id', foreignKey: 'collectionId', as: 'bookmarks' });
   return CollectionModel;
 }

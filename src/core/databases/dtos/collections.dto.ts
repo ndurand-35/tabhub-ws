@@ -1,12 +1,13 @@
 import { CollectionType } from '@/core/utils/interfaces/index.interface';
-import { IsString, IsNumber } from 'class-validator';
+import { IsString, IsNumber, ValidateIf } from 'class-validator';
 
 export class CreateCollectionDto {
   @IsString()
   public name: string;
 
   @IsString()
-  public icon: string;
+  @ValidateIf((object, value) => value !== undefined)
+  public icon?: string |null;
   
   public collectionType?: CollectionType | null;
 
