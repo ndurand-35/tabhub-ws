@@ -10,8 +10,7 @@ export class CollectionService {
 
   public async findMyCollection(userData: User): Promise<Collection[]> {
     const myCollection: Collection[] = await this.collections.findAll({
-      where: { userId: userData.id, collectionType: null, parentId : null },
-      include: [{ model: DB.Collection, as: 'children'}]
+      where: { userId: userData.id, collectionType: null, parentId: null },
     });
     return myCollection;
   }
@@ -19,7 +18,12 @@ export class CollectionService {
   public async findCollectionById(collectionId: number): Promise<Collection> {
     if (isEmpty(collectionId)) throw new HttpException(400, 'CollectionId is empty');
 
-    const findCollection: Collection = await this.collections.findByPk(collectionId,{include : [{model: DB.Bookmark, as :  'bookmarks'}]});
+    const findCollection: Collection = await this.collections.findByPk(collectionId, {
+      include: [
+        { model: DB.Bookmark, as: 'bookmarks' },
+        { model: DB.Collection, as: 'children' },
+      ],
+    });
     if (!findCollection) throw new HttpException(409, "Collection doesn't exist");
 
     return findCollection;
@@ -28,12 +32,13 @@ export class CollectionService {
   public async findCollectionByType(collectionType: CollectionType, userData: User): Promise<Collection> {
     if (isEmpty(collectionType)) throw new HttpException(400, 'collectionType is empty');
 
-    let findCollection: Collection = await this.collections.findOne(
-      { where: { userId: userData.id, collectionType: collectionType }, include: [{ model: DB.Bookmark, as: 'bookmarks' }] }
-    );
+    let findCollection: Collection = await this.collections.findOne({
+      where: { userId: userData.id, collectionType: collectionType },
+      include: [{ model: DB.Bookmark, as: 'bookmarks' }],
+    });
     if (!findCollection) {
-      findCollection = await this.createCollection({ name : collectionType.toString(), collectionType}, userData)
-    }  //throw new HttpException(409, "Collection doesn't exist");
+      findCollection = await this.createCollection({ name: collectionType.toString(), collectionType }, userData);
+    } //throw new HttpException(409, "Collection doesn't exist");
 
     return findCollection;
   }
