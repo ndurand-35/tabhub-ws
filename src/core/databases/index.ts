@@ -6,9 +6,9 @@ import BookmarkModel from '@models/bookmark.model';
 import { logger } from '@utils/logger';
 
 const sequelize = new Sequelize.Sequelize(DB_DATABASE, DB_USER, DB_PASSWORD, {
-  dialect: 'postgresql',
+  dialect: 'postgres',
   host: DB_HOST,
-  port: DB_PORT,
+  port: parseInt(DB_PORT),
   timezone: '+09:00',
   define: {
     charset: 'utf8mb4',

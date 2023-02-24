@@ -7,7 +7,11 @@ export class CreateCollectionDto {
 
   @IsString()
   @ValidateIf((object, value) => value !== undefined)
-  public icon?: string |null;
+  public icon?: string | null;
+  
+  @IsNumber()
+  @ValidateIf((object, value) => value !== undefined)
+  public parentId?: number | null;
   
   public collectionType?: CollectionType | null;
 
@@ -22,4 +26,8 @@ export class UpdateCollectionDto {
 
   @IsString()
   public icon: string;
+
+  @IsNumber()
+  @ValidateIf((object, value) => value !== undefined)
+  public parentId?: number | null;
 }

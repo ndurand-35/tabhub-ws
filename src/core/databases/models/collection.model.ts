@@ -57,6 +57,7 @@ export default function (sequelize: Sequelize): typeof CollectionModel {
     },
   );
   CollectionModel.hasMany(CollectionModel, {sourceKey: 'id',foreignKey : 'parentId', as : 'children'});
+  CollectionModel.belongsTo(CollectionModel, {foreignKey : 'parentId', as : 'parent'});
   CollectionModel.hasMany(BookmarkModel, { sourceKey: 'id', foreignKey: 'collectionId', as: 'bookmarks' });
   return CollectionModel;
 }

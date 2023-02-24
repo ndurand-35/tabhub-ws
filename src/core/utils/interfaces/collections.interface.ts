@@ -7,6 +7,6 @@ export interface Collection {
   name: string;
   icon: string;
   collectionType?: CollectionType | null;
-  parentId?: Collection | null;
+  parentId?: number | null;
   userId: number;
 }

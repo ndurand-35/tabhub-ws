@@ -25,7 +25,7 @@ export const getLinkData = async (bookmarkData: CreateBookmarkDto): Promise<Crea
   try {
     let response = await axios.get(bookmarkData.link)
     const document : Document = new JSDOM(`${response.data}`).window.document;
-    bookmarkData.title = document.title
+    bookmarkData.title = document.title.split('-')[0]
     bookmarkData.description = document.querySelector('meta[name="description"]').getAttribute('content')
   } catch (err) {
     let domain = (new URL(bookmarkData.link));
