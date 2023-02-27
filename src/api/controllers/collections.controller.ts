@@ -1,11 +1,13 @@
 import { NextFunction, Request, Response } from 'express';
 import { CreateCollectionDto, UpdateCollectionDto } from '@dtos/collections.dto';
 import { CollectionService } from '@services/index.service';
-import { User, Collection, RequestWithUser, CollectionType } from '@/core/utils/interfaces/index.interface';
+import { User, Collection, RequestWithUser, CollectionType,Bookmark } from '@/core/utils/interfaces/index.interface';
 import { HttpException } from '@/core/utils/exceptions/HttpException';
+import { MinioService } from '@/core/services/minio.service';
 
 class CollectionsController {
   public collectionService = new CollectionService();
+  public minioService = new MinioService();
 
   public getCollection = async (req: RequestWithUser, res: Response, next: NextFunction) => {
     try {
@@ -22,6 +24,12 @@ class CollectionsController {
     try {
       const collectionId = Number(req.params.id);
       const findOneCollectionData: Collection = await this.collectionService.findCollectionById(collectionId);
+      let bookmarksWithImageUrl: Array<Bookmark> = await Promise.all(findOneCollectionData.bookmarks.map(async (bookmark) => {
+        bookmark.imagePath = await this.minioService.getObjectUrl(bookmark.imagePath)
+        return bookmark
+      }))
+
+      findOneCollectionData.bookmarks = bookmarksWithImageUrl;
 
       res.status(200).json({ data: findOneCollectionData, message: 'findOne' });
     } catch (error) {

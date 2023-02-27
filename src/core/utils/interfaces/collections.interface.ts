@@ -1,3 +1,5 @@
+import { Bookmark } from "@/core/utils/interfaces/bookmark.interface";
+
 export enum CollectionType {
   "HOME",  "TRASH"
 }
@@ -9,4 +11,5 @@ export interface Collection {
   collectionType?: CollectionType | null;
   parentId?: number | null;
   userId: number;
+  bookmarks? : Array<Bookmark>
 }

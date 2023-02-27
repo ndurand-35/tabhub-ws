@@ -34,12 +34,13 @@ class BookmarkController {
 
   public createBookmark = async (req: RequestWithUser, res: Response, next: NextFunction) => {
     try {
+      const userData: User = req.user;
       const bookmarkData: CreateBookmarkDto = req.body;
 
       const findOneCollectionData: Collection = await this.collectionService.findCollectionById(bookmarkData.collectionId);
 
       /* Récupération d'information à partir du lien */
-      const enhancedBookmarkData = await getLinkData(bookmarkData)
+      const enhancedBookmarkData = await getLinkData(bookmarkData,userData)
 
       const createBookmarkData: Bookmark = await this.bookmarkService.createBookmark(enhancedBookmarkData, findOneCollectionData);
       res.status(201).json({ data: createBookmarkData, message: 'created' });

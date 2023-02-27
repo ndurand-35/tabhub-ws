@@ -8,6 +8,8 @@ export class BookmarkModel extends Model<Bookmark, BookmarkCreationAttributes> i
   public id: number;
   public title: string;
   public description: string;
+  public imagePath: string;
+  public website: string;
   public link: string;
 
   // foreign keys are automatically added by associations methods (like Bookmark.belongsTo)
@@ -38,6 +40,14 @@ export default function (sequelize: Sequelize): typeof BookmarkModel {
       title: {
         allowNull: false,
         type: DataTypes.STRING(100),
+      },
+      website: {
+        allowNull: false,
+        type: DataTypes.STRING(255),
+      },
+      imagePath: {
+        allowNull: false,
+        type: DataTypes.STRING(255),
       },
       description: {
         allowNull: true,

@@ -3,5 +3,7 @@ export interface Bookmark {
   title: string;
   link: string;
   description: string;
+  imagePath: string;
+  website: string;
   collectionId: number;
 }
