@@ -1,6 +1,10 @@
 import axios from 'axios';
 import url from 'url';
 import { JSDOM } from 'jsdom'
+
+import { ClassConstructor } from "class-transformer";
+import { registerDecorator, ValidationArguments, ValidationOptions, ValidatorConstraint, ValidatorConstraintInterface } from 'class-validator';
+
 import { CreateBookmarkDto } from '@/core/databases/dtos/bookmarks.dto';
 import { MinioService } from '@/core/services/minio.service';
 import { User } from '@/core/utils/interfaces/users.interface';
@@ -68,4 +72,33 @@ export function makeid(length) {
     counter += 1;
   }
   return result;
+}
+
+export const Match = <T>(
+  type: ClassConstructor<T>,
+  property: (o: T) => any,
+  validationOptions?: ValidationOptions,
+) => {
+  return (object: any, propertyName: string) => {
+    registerDecorator({
+      target: object.constructor,
+      propertyName,
+      options: validationOptions,
+      constraints: [property],
+      validator: MatchConstraint,
+    });
+  };
+};
+
+@ValidatorConstraint({ name: "Match" })
+export class MatchConstraint implements ValidatorConstraintInterface {
+  validate(value: any, args: ValidationArguments) {
+    const [fn] = args.constraints;
+    return fn(args.object) === value;
+  }
+
+  defaultMessage(args: ValidationArguments) {
+    const [constraintProperty]: (() => any)[] = args.constraints;
+    return `${constraintProperty} and ${args.property} does not match`;
+  }
 }

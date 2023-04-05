@@ -16,10 +16,11 @@ export class CollectionService {
     return myCollection;
   }
 
-  public async findCollectionById(collectionId: number): Promise<Collection> {
+  public async findCollectionById(collectionId: number, userData: User): Promise<Collection> {
     if (isEmpty(collectionId)) throw new HttpException(400, 'CollectionId is empty');
 
-    const findCollection: Collection = await this.collections.findByPk(collectionId, {
+    const findCollection: Collection = await this.collections.findOne({
+      where: {id : collectionId, userId : userData.id},
       include: [
         { model: DB.Bookmark, as: 'bookmarks' },
         { model: DB.Collection, as: 'children' },
@@ -27,7 +28,6 @@ export class CollectionService {
       ],
     });
     if (!findCollection) throw new HttpException(409, "Collection doesn't exist");
-
     return findCollection;
   }
 
