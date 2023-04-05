@@ -34,6 +34,10 @@ export class UpdateBookmarkDto {
   @IsString()
   @ValidateIf((object, value) => value !== undefined)
   public title?: string | undefined;
+
+  @IsString()
+  @ValidateIf((object, value) => value !== undefined)
+  public description?: string | undefined;
   
   @IsNumber()
   public collectionId: number;

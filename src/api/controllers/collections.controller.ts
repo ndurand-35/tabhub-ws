@@ -24,11 +24,11 @@ class CollectionsController {
     try {
       const collectionId = Number(req.params.id);
       const findOneCollectionData: Collection = await this.collectionService.findCollectionById(collectionId);
+
       let bookmarksWithImageUrl: Array<Bookmark> = await Promise.all(findOneCollectionData.bookmarks.map(async (bookmark) => {
         bookmark.imagePath = await this.minioService.getObjectUrl(bookmark.imagePath)
         return bookmark
       }))
-
       findOneCollectionData.bookmarks = bookmarksWithImageUrl;
 
       res.status(200).json({ data: findOneCollectionData, message: 'findOne' });
@@ -46,7 +46,12 @@ class CollectionsController {
         throw new HttpException(400, 'collectionType is invalid');
       
       const userData: User = req.user;
-      const findOneCollectionData: Collection = await this.collectionService.findCollectionByType(collectionType,userData);
+      const findOneCollectionData: Collection = await this.collectionService.findCollectionByType(collectionType, userData);
+      let bookmarksWithImageUrl: Array<Bookmark> = await Promise.all(findOneCollectionData.bookmarks.map(async (bookmark) => {
+        bookmark.imagePath = await this.minioService.getObjectUrl(bookmark.imagePath)
+        return bookmark
+      }))
+      findOneCollectionData.bookmarks = bookmarksWithImageUrl;
 
       res.status(200).json({ data: findOneCollectionData, message: 'findOne' });
     } catch (error) {
