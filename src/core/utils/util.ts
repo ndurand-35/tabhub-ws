@@ -54,7 +54,7 @@ export const webLinkToS3 = async (bookmarkData: CreateBookmarkDto, userData: Use
 
   const response = await axios.get(bookmarkData.imagePath, { responseType: 'arraybuffer' })
   const buffer = Buffer.from(response.data, "utf-8")
-  bookmarkData.imagePath = `${userData.id}/${bookmarkData.website}/${makeid(12)}${extension}`;
+  bookmarkData.imagePath = `${userData.id}/${makeid(12)}${extension}`;
   await minioService.createFile(bookmarkData.imagePath, buffer)
   return bookmarkData;
 }

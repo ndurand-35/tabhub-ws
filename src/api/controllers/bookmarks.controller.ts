@@ -37,7 +37,7 @@ class BookmarkController {
       const userData: User = req.user;
       const bookmarkData: CreateBookmarkDto = req.body;
 
-      const findOneCollectionData: Collection = await this.collectionService.findCollectionById(bookmarkData.collectionId);
+      const findOneCollectionData: Collection = await this.collectionService.findCollectionById(bookmarkData.collectionId, userData);
 
       /* Récupération d'information à partir du lien */
       const enhancedBookmarkData = await getLinkData(bookmarkData,userData)

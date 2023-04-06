@@ -11,7 +11,13 @@ export class CollectionService {
   public async findMyCollection(userData: User): Promise<Collection[]> {
     const myCollection: Collection[] = await this.collections.findAll({
       where: { userId: userData.id, collectionType: null, parentId: null },
-      include : [{ model: DB.Collection, as: 'children' },]
+      include: [
+        {
+          model: DB.Collection,
+          as: 'children',
+          include: [{ model: DB.Collection, as: 'children', include: [{ model: DB.Collection, as: 'children' }] }],
+        },
+      ],
     });
     return myCollection;
   }
@@ -20,11 +26,11 @@ export class CollectionService {
     if (isEmpty(collectionId)) throw new HttpException(400, 'CollectionId is empty');
 
     const findCollection: Collection = await this.collections.findOne({
-      where: {id : collectionId, userId : userData.id},
+      where: { id: collectionId, userId: userData.id },
       include: [
         { model: DB.Bookmark, as: 'bookmarks' },
         { model: DB.Collection, as: 'children' },
-        { model: DB.Collection, as: 'parent', include: [ { model: DB.Collection, as: 'parent' }] },
+        { model: DB.Collection, as: 'parent', include: [{ model: DB.Collection, as: 'parent', include: [{ model: DB.Collection, as: 'parent' }] }] },
       ],
     });
     if (!findCollection) throw new HttpException(409, "Collection doesn't exist");
@@ -50,7 +56,7 @@ export class CollectionService {
 
     const findCollection: Collection = await this.collections.findOne({ where: { name: collectionData.name, userId: userData.id } });
     if (findCollection) throw new HttpException(409, `This email ${collectionData.name} already exists`);
-    console.log(collectionData)
+    console.log(collectionData);
     const createCollectionData: Collection = await this.collections.create({ ...collectionData, userId: userData.id });
     return createCollectionData;
   }
