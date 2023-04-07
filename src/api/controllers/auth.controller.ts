@@ -25,7 +25,7 @@ class AuthController {
       const userData: LoginUserDto = req.body;
       const { findUser , token } = await this.authService.login(userData);
 
-      res.status(200).json({ data: {token : token}, message: 'login' });
+      res.status(200).json({ data: {accessToken : token}, message: 'login' });
     } catch (error) {
       next(error);
     }

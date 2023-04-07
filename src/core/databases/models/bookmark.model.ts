@@ -9,6 +9,7 @@ export class BookmarkModel extends Model<Bookmark, BookmarkCreationAttributes> i
   public title: string;
   public description: string;
   public imagePath: string;
+  public imageLink?: string;
   public website: string;
   public link: string;
 
@@ -57,6 +58,9 @@ export default function (sequelize: Sequelize): typeof BookmarkModel {
         allowNull: true,
         type: DataTypes.INTEGER,
       },
+      imageLink: {
+        type: DataTypes.VIRTUAL
+      }
     },
     {
       tableName: 'bookmark',

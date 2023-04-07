@@ -1,12 +1,13 @@
 import { Router } from 'express';
-import multer from 'multer';
+import FilesController from '@controllers/files.controller';
 
-import AuthController from '@controllers/auth.controller';
-import { CreateUserDto,LoginUserDto } from '@dtos/users.dto';
 import { Routes } from '@interfaces/routes.interface';
 import authMiddleware from '@middlewares/auth.middleware';
 import validationMiddleware from '@middlewares/validation.middleware';
-import FilesController from '../controllers/files.controller';
+  
+import { MinioService } from '@/core/services/minio.service';
+const minioService = new MinioService();
+let multer = minioService.getMulter();
 
 class FilesRoute implements Routes {
   public path = '/file';
@@ -18,7 +19,7 @@ class FilesRoute implements Routes {
   }
 
   private initializeRoutes() {
-    this.router.post(`${this.path}`, multer().none(), this.filesController.createUserFiles);
+    this.router.post(`${this.path}`,  authMiddleware, multer.single('file'), this.filesController.createUserFiles);
     // this.router.post(`${this.path}/login`, validationMiddleware(LoginUserDto, 'body'), this.authController.logIn);
     // this.router.post(`${this.path}/logout`, authMiddleware, this.authController.logOut);
   }

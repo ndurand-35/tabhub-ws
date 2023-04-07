@@ -4,6 +4,7 @@ export interface Bookmark {
   link: string;
   description: string;
   imagePath: string;
+  imageLink?: string;
   website: string;
   collectionId: number;
 }

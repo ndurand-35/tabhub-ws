@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { CreateCollectionDto, UpdateCollectionDto } from '@dtos/collections.dto';
 import { CollectionService } from '@services/index.service';
-import { User, Collection, RequestWithUser, CollectionType,Bookmark } from '@/core/utils/interfaces/index.interface';
+import { User, Collection, RequestWithUser, CollectionType, Bookmark } from '@/core/utils/interfaces/index.interface';
 import { HttpException } from '@/core/utils/exceptions/HttpException';
 import { MinioService } from '@/core/services/minio.service';
 
@@ -26,11 +26,13 @@ class CollectionsController {
       const collectionId = Number(req.params.id);
       const findOneCollectionData: Collection = await this.collectionService.findCollectionById(collectionId, userData);
 
-      let bookmarksWithImageUrl: Array<Bookmark> = await Promise.all(findOneCollectionData.bookmarks.map(async (bookmark) => {
-        bookmark.imagePath = await this.minioService.getObjectUrl(bookmark.imagePath)
-        return bookmark
-      }))
-      findOneCollectionData.bookmarks = bookmarksWithImageUrl;
+      let bookmarksWithImageLink: Array<Bookmark> = await Promise.all(
+        findOneCollectionData.bookmarks.map(async (bookmark: Bookmark) => {
+          bookmark.imageLink = await this.minioService.getObjectUrl(bookmark.imagePath);
+          return bookmark;
+        }),
+      );
+      findOneCollectionData.bookmarks = bookmarksWithImageLink;
 
       res.status(200).json({ data: findOneCollectionData, message: 'findOne' });
     } catch (error) {
@@ -41,17 +43,17 @@ class CollectionsController {
   public getCollectionByType = async (req: RequestWithUser, res: Response, next: NextFunction) => {
     try {
       let collectionType: CollectionType;
-      if (Object.values(CollectionType).some((col: string) => col === req.params.type))
-        collectionType = <CollectionType> <unknown>req.params.type;
-      else
-        throw new HttpException(400, 'collectionType is invalid');
-      
+      if (Object.values(CollectionType).some((col: string) => col === req.params.type)) collectionType = <CollectionType>(<unknown>req.params.type);
+      else throw new HttpException(400, 'collectionType is invalid');
+
       const userData: User = req.user;
       const findOneCollectionData: Collection = await this.collectionService.findCollectionByType(collectionType, userData);
-      let bookmarksWithImageUrl: Array<Bookmark> = await Promise.all(findOneCollectionData.bookmarks.map(async (bookmark) => {
-        bookmark.imagePath = await this.minioService.getObjectUrl(bookmark.imagePath)
-        return bookmark
-      }))
+      let bookmarksWithImageUrl: Array<Bookmark> = await Promise.all(
+        findOneCollectionData.bookmarks.map(async bookmark => {
+          bookmark.imagePath = await this.minioService.getObjectUrl(bookmark.imagePath);
+          return bookmark;
+        }),
+      );
       findOneCollectionData.bookmarks = bookmarksWithImageUrl;
 
       res.status(200).json({ data: findOneCollectionData, message: 'findOne' });

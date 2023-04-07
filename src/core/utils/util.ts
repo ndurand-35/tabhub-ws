@@ -59,8 +59,6 @@ export const webLinkToS3 = async (bookmarkData: CreateBookmarkDto, userData: Use
   return bookmarkData;
 }
 
-  
-
 
 export function makeid(length) {
   let result = '';
@@ -71,7 +69,7 @@ export function makeid(length) {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
     counter += 1;
   }
-  return result;
+  return Date.now().toString() + '_' + result;
 }
 
 export const Match = <T>(

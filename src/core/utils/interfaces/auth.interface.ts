@@ -12,5 +12,9 @@ export interface TokenData {
 
 export interface RequestWithUser extends Request {
   user: User;
-  files: File[];
+}
+
+export interface RequestUF extends Request {
+  user: User;
+  file: Express.MulterMinIOStorage.File
 }
