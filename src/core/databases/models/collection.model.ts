@@ -1,5 +1,5 @@
 import { Sequelize, DataTypes, Model, Optional, NonAttribute, ForeignKey } from 'sequelize';
-import { Collection,CollectionType } from '@/core/utils/interfaces/collections.interface';
+import { Collection, CollectionType } from '@/core/utils/interfaces/collections.interface';
 import { UserModel } from '@models/users.model';
 import { BookmarkModel } from './bookmark.model';
 
@@ -40,7 +40,6 @@ export default function (sequelize: Sequelize): typeof CollectionModel {
       collectionType: {
         allowNull: true,
         type: DataTypes.ENUM(...Object.keys(CollectionType)),
-
       },
       parentId: {
         allowNull: true,
@@ -56,8 +55,8 @@ export default function (sequelize: Sequelize): typeof CollectionModel {
       sequelize,
     },
   );
-  CollectionModel.hasMany(CollectionModel, {sourceKey: 'id',foreignKey : 'parentId', as : 'children'});
-  CollectionModel.belongsTo(CollectionModel, {foreignKey : 'parentId', as : 'parent'});
+  CollectionModel.hasMany(CollectionModel, { sourceKey: 'id', foreignKey: 'parentId', as: 'children' });
+  CollectionModel.belongsTo(CollectionModel, { foreignKey: 'parentId', as: 'parent' });
   CollectionModel.hasMany(BookmarkModel, { sourceKey: 'id', foreignKey: 'collectionId', as: 'bookmarks' });
   return CollectionModel;
 }

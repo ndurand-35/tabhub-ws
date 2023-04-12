@@ -16,5 +16,5 @@ export interface RequestWithUser extends Request {
 
 export interface RequestUF extends Request {
   user: User;
-  file: Express.MulterMinIOStorage.File
+  file: Express.MulterMinIOStorage.File;
 }

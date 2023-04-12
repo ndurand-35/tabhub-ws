@@ -59,8 +59,8 @@ export default function (sequelize: Sequelize): typeof BookmarkModel {
         type: DataTypes.INTEGER,
       },
       imageLink: {
-        type: DataTypes.VIRTUAL
-      }
+        type: DataTypes.VIRTUAL,
+      },
     },
     {
       tableName: 'bookmark',

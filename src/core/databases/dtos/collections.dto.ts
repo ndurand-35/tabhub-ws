@@ -8,13 +8,12 @@ export class CreateCollectionDto {
   @IsString()
   @ValidateIf((object, value) => value !== undefined)
   public icon?: string | null;
-  
+
   @IsNumber()
   @ValidateIf((object, value) => value !== undefined)
   public parentId?: number | null;
-  
-  public collectionType?: CollectionType | null;
 
+  public collectionType?: CollectionType | null;
 }
 
 export class UpdateCollectionDto {

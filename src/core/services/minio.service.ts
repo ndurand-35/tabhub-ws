@@ -37,8 +37,8 @@ export class MinioService {
         bucket: this.bucketName,
         acl: 'public-read',
         key: function (req: RequestWithUser, file, cb) {
-          const extension = file.originalname.substring(file.originalname.lastIndexOf("."))
-          cb(null, req.user.id + '/' +  makeid(12) + extension);
+          const extension = file.originalname.substring(file.originalname.lastIndexOf('.'));
+          cb(null, req.user.id + '/' + makeid(12) + extension);
         },
       }),
     });

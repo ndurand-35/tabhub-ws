@@ -4,9 +4,9 @@ import { User, Collection, RequestWithUser, Bookmark, RequestUF } from '@/core/u
 class FilesController {
   public createUserFiles = async (req: RequestUF, res: Response, next: NextFunction) => {
     try {
-      res.status(201).json({ filePath : req.file.key,message: 'created' });
+      res.status(201).json({ filePath: req.file.key, message: 'created' });
     } catch (error) {
-      console.log(error)
+      console.log(error);
       next(error);
     }
   };

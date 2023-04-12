@@ -1,7 +1,8 @@
-import { Bookmark } from "@/core/utils/interfaces/bookmark.interface";
+import { Bookmark } from '@/core/utils/interfaces/bookmark.interface';
 
 export enum CollectionType {
-  "HOME",  "TRASH"
+  'HOME',
+  'TRASH',
 }
 
 export interface Collection {
@@ -11,5 +12,5 @@ export interface Collection {
   collectionType?: CollectionType | null;
   parentId?: number | null;
   userId: number;
-  bookmarks? : Array<Bookmark>
+  bookmarks?: Array<Bookmark>;
 }

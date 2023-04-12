@@ -1,14 +1,14 @@
 import { NextFunction, Request, Response } from 'express';
-import { CreateBookmarkDto ,UpdateBookmarkDto} from '@dtos/bookmarks.dto';
-import { BookmarkService,CollectionService } from '@services/index.service';
+import { CreateBookmarkDto, UpdateBookmarkDto } from '@dtos/bookmarks.dto';
+import { BookmarkService, CollectionService } from '@services/index.service';
 import { User, Bookmark, RequestWithUser, Collection } from '@/core/utils/interfaces/index.interface';
 import { getLinkData } from '@/core/utils/util';
-
-
+import { MinioService } from '@/core/services/minio.service';
 
 class BookmarkController {
   public bookmarkService = new BookmarkService();
   public collectionService = new CollectionService();
+  public minioService = new MinioService();
 
   // public getCollection = async (req: RequestWithUser, res: Response, next: NextFunction) => {
   //   try {
@@ -40,7 +40,7 @@ class BookmarkController {
       const findOneCollectionData: Collection = await this.collectionService.findCollectionById(bookmarkData.collectionId, userData);
 
       /* Récupération d'information à partir du lien */
-      const enhancedBookmarkData = await getLinkData(bookmarkData,userData)
+      const enhancedBookmarkData = await getLinkData(bookmarkData, userData);
 
       const createBookmarkData: Bookmark = await this.bookmarkService.createBookmark(enhancedBookmarkData, findOneCollectionData);
       res.status(201).json({ data: createBookmarkData, message: 'created' });
@@ -54,6 +54,7 @@ class BookmarkController {
       const bookmarkId = Number(req.params.id);
       const bookmarkData: UpdateBookmarkDto = req.body;
       const updateBookmarkData: Bookmark = await this.bookmarkService.updateBookmark(bookmarkId, bookmarkData);
+      updateBookmarkData.imageLink = await this.minioService.getObjectUrl(updateBookmarkData.imagePath);
 
       res.status(200).json({ data: updateBookmarkData, message: 'updated' });
     } catch (error) {

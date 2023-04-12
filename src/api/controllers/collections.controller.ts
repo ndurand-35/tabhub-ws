@@ -26,7 +26,7 @@ class CollectionsController {
       const collectionId = Number(req.params.id);
       const findOneCollectionData: Collection = await this.collectionService.findCollectionById(collectionId, userData);
 
-      let bookmarksWithImageLink: Array<Bookmark> = await Promise.all(
+      const bookmarksWithImageLink: Array<Bookmark> = await Promise.all(
         findOneCollectionData.bookmarks.map(async (bookmark: Bookmark) => {
           bookmark.imageLink = await this.minioService.getObjectUrl(bookmark.imagePath);
           return bookmark;
@@ -48,7 +48,7 @@ class CollectionsController {
 
       const userData: User = req.user;
       const findOneCollectionData: Collection = await this.collectionService.findCollectionByType(collectionType, userData);
-      let bookmarksWithImageUrl: Array<Bookmark> = await Promise.all(
+      const bookmarksWithImageUrl: Array<Bookmark> = await Promise.all(
         findOneCollectionData.bookmarks.map(async bookmark => {
           bookmark.imagePath = await this.minioService.getObjectUrl(bookmark.imagePath);
           return bookmark;

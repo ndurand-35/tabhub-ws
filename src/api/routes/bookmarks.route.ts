@@ -18,7 +18,12 @@ class BookmarkRoute implements Routes {
     // this.router.get(`${this.path}`, authMiddleware, this.bookmarkController.getBookmark);
     // this.router.get(`${this.path}/:id(\\d+)`, this.usersController.getUserById);
     this.router.post(`${this.path}`, authMiddleware, validationMiddleware(CreateBookmarkDto, 'body'), this.bookmarkController.createBookmark);
-    this.router.put(`${this.path}/:id(\\d+)`, authMiddleware, validationMiddleware(CreateBookmarkDto, 'body', true), this.bookmarkController.updateBookmark);
+    this.router.put(
+      `${this.path}/:id(\\d+)`,
+      authMiddleware,
+      validationMiddleware(CreateBookmarkDto, 'body', true),
+      this.bookmarkController.updateBookmark,
+    );
     this.router.delete(`${this.path}/:id(\\d+)`, this.bookmarkController.deleteBookmark);
   }
 }

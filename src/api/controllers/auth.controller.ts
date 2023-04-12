@@ -3,8 +3,8 @@ import { NextFunction, Request, Response } from 'express';
 import { User } from '@interfaces/users.interface';
 import { RequestWithUser } from '@interfaces/auth.interface';
 
-import { CreateUserDto,LoginUserDto } from '@dtos/users.dto';
-import {AuthService} from '@services/index.service';
+import { CreateUserDto, LoginUserDto } from '@dtos/users.dto';
+import { AuthService } from '@services/index.service';
 
 class AuthController {
   public authService = new AuthService();
@@ -23,9 +23,9 @@ class AuthController {
   public logIn = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userData: LoginUserDto = req.body;
-      const { findUser , token } = await this.authService.login(userData);
+      const { findUser, token } = await this.authService.login(userData);
 
-      res.status(200).json({ data: {accessToken : token}, message: 'login' });
+      res.status(200).json({ data: { accessToken: token }, message: 'login' });
     } catch (error) {
       next(error);
     }

@@ -1,8 +1,8 @@
 import axios from 'axios';
 import url from 'url';
-import { JSDOM } from 'jsdom'
+import { JSDOM } from 'jsdom';
 
-import { ClassConstructor } from "class-transformer";
+import { ClassConstructor } from 'class-transformer';
 import { registerDecorator, ValidationArguments, ValidationOptions, ValidatorConstraint, ValidatorConstraintInterface } from 'class-validator';
 
 import { CreateBookmarkDto } from '@/core/databases/dtos/bookmarks.dto';
@@ -29,36 +29,35 @@ export const isEmpty = (value: string | number | object): boolean => {
   }
 };
 
-export const getLinkData = async (bookmarkData: CreateBookmarkDto,userData : User): Promise<CreateBookmarkDto> => {
+export const getLinkData = async (bookmarkData: CreateBookmarkDto, userData: User): Promise<CreateBookmarkDto> => {
   try {
-    let response = await axios.get(bookmarkData.link)
-    const document : Document = new JSDOM(`${response.data}`).window.document;
-    bookmarkData.title = document.title.split('-')[0]
-    bookmarkData.description = document.querySelector('meta[name="description"]').getAttribute('content')
-    bookmarkData.website = url.parse(bookmarkData.link).host
+    const response = await axios.get(bookmarkData.link);
+    const document: Document = new JSDOM(`${response.data}`).window.document;
+    bookmarkData.title = document.title.split('-')[0];
+    bookmarkData.description = document.querySelector('meta[name="description"]').getAttribute('content');
+    bookmarkData.website = url.parse(bookmarkData.link).host;
     /* Récuperation de l'image meta Facebook */
-    bookmarkData.imagePath = document.querySelector('meta[property="og:image"]').getAttribute('content')
-    bookmarkData = await webLinkToS3(bookmarkData, userData)
+    bookmarkData.imagePath = document.querySelector('meta[property="og:image"]').getAttribute('content');
+    bookmarkData = await webLinkToS3(bookmarkData, userData);
   } catch (err) {
-    console.log(err)
-    let domain = (new URL(bookmarkData.link));
-    bookmarkData.title = domain.hostname.split('.')[0]
-    bookmarkData.imagePath = "placeholder/image.png"
+    console.log(err);
+    const domain = new URL(bookmarkData.link);
+    bookmarkData.title = domain.hostname.split('.')[0];
+    bookmarkData.imagePath = 'placeholder/image.png';
   }
-  return bookmarkData
-}
+  return bookmarkData;
+};
 
 export const webLinkToS3 = async (bookmarkData: CreateBookmarkDto, userData: User): Promise<CreateBookmarkDto> => {
-  const minioService = new MinioService()
-  const extension = bookmarkData.imagePath.substring(bookmarkData.imagePath.lastIndexOf("."))
+  const minioService = new MinioService();
+  const extension = bookmarkData.imagePath.substring(bookmarkData.imagePath.lastIndexOf('.'));
 
-  const response = await axios.get(bookmarkData.imagePath, { responseType: 'arraybuffer' })
-  const buffer = Buffer.from(response.data, "utf-8")
+  const response = await axios.get(bookmarkData.imagePath, { responseType: 'arraybuffer' });
+  const buffer = Buffer.from(response.data, 'utf-8');
   bookmarkData.imagePath = `${userData.id}/${makeid(12)}${extension}`;
-  await minioService.createFile(bookmarkData.imagePath, buffer)
+  await minioService.createFile(bookmarkData.imagePath, buffer);
   return bookmarkData;
-}
-
+};
 
 export function makeid(length) {
   let result = '';
@@ -72,11 +71,7 @@ export function makeid(length) {
   return Date.now().toString() + '_' + result;
 }
 
-export const Match = <T>(
-  type: ClassConstructor<T>,
-  property: (o: T) => any,
-  validationOptions?: ValidationOptions,
-) => {
+export const Match = <T>(type: ClassConstructor<T>, property: (o: T) => any, validationOptions?: ValidationOptions) => {
   return (object: any, propertyName: string) => {
     registerDecorator({
       target: object.constructor,
@@ -88,7 +83,7 @@ export const Match = <T>(
   };
 };
 
-@ValidatorConstraint({ name: "Match" })
+@ValidatorConstraint({ name: 'Match' })
 export class MatchConstraint implements ValidatorConstraintInterface {
   validate(value: any, args: ValidationArguments) {
     const [fn] = args.constraints;

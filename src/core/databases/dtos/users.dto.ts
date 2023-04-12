@@ -17,6 +17,6 @@ export class CreateUserDto {
   public password: string;
 
   @IsString()
-  @Match(CreateUserDto, (prop) => prop.password)
+  @Match(CreateUserDto, prop => prop.password)
   public password_confirm: string;
 }
