@@ -67,5 +67,10 @@ export default function (sequelize: Sequelize): typeof BookmarkModel {
       sequelize,
     },
   );
+
   return BookmarkModel;
+}
+
+export function buildBookmarkAssociation() {
+  BookmarkModel.belongsTo(CollectionModel, { foreignKey: 'collectionId', as: 'collection' });
 }

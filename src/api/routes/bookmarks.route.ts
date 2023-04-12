@@ -24,7 +24,7 @@ class BookmarkRoute implements Routes {
       validationMiddleware(CreateBookmarkDto, 'body', true),
       this.bookmarkController.updateBookmark,
     );
-    this.router.delete(`${this.path}/:id(\\d+)`, this.bookmarkController.deleteBookmark);
+    this.router.delete(`${this.path}/:id(\\d+)`,authMiddleware,  this.bookmarkController.deleteBookmark);
   }
 }
 

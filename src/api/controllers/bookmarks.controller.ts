@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { CreateBookmarkDto, UpdateBookmarkDto } from '@dtos/bookmarks.dto';
 import { BookmarkService, CollectionService } from '@services/index.service';
-import { User, Bookmark, RequestWithUser, Collection } from '@/core/utils/interfaces/index.interface';
+import { User, Bookmark, RequestWithUser, Collection, CollectionType } from '@/core/utils/interfaces/index.interface';
 import { getLinkData } from '@/core/utils/util';
 import { MinioService } from '@/core/services/minio.service';
 
@@ -62,12 +62,23 @@ class BookmarkController {
     }
   };
 
-  public deleteBookmark = async (req: Request, res: Response, next: NextFunction) => {
+  public deleteBookmark = async (req: RequestWithUser, res: Response, next: NextFunction) => {
     try {
       const bookmarkId = Number(req.params.id);
-      const deleteBookmarkData: Bookmark = await this.bookmarkService.deleteBookmark(bookmarkId);
+      const userData: User = req.user;
 
-      res.status(200).json({ data: deleteBookmarkData, message: 'deleted' });
+      const foundBookmark: Bookmark = await this.bookmarkService.findBookmarkById(bookmarkId);
+      if (foundBookmark.collection?.collectionType == CollectionType.TRASH) {
+        const deleteBookmarkData: Bookmark = await this.bookmarkService.deleteBookmark(bookmarkId);
+      } else {
+        const trashCollection: Collection = await this.collectionService.findCollectionByType(CollectionType.TRASH as CollectionType, userData);
+        const movedBookmarkData: Bookmark = await this.bookmarkService.updateBookmark(bookmarkId, {
+          collectionId: trashCollection.id,
+          id: foundBookmark.id,
+          link: foundBookmark.link,
+        });
+      }
+      res.status(200).json({ data: foundBookmark, message: 'deleted' });
     } catch (error) {
       next(error);
     }

@@ -50,7 +50,7 @@ class CollectionsController {
       const findOneCollectionData: Collection = await this.collectionService.findCollectionByType(collectionType, userData);
       const bookmarksWithImageUrl: Array<Bookmark> = await Promise.all(
         findOneCollectionData.bookmarks.map(async bookmark => {
-          bookmark.imagePath = await this.minioService.getObjectUrl(bookmark.imagePath);
+          bookmark.imageLink = await this.minioService.getObjectUrl(bookmark.imagePath);
           return bookmark;
         }),
       );

@@ -2,7 +2,7 @@ import { hash } from 'bcrypt';
 import DB from '@databases';
 import { CreateBookmarkDto, UpdateBookmarkDto } from '@dtos/bookmarks.dto';
 import { HttpException } from '@exceptions/HttpException';
-import { Bookmark, Collection, User } from '@interfaces/index.interface';
+import { Bookmark, Collection, CollectionType, User } from '@interfaces/index.interface';
 import { isEmpty } from '@utils/util';
 
 export class BookmarkService {
@@ -13,14 +13,14 @@ export class BookmarkService {
   //   return myBookmark;
   // }
 
-  // public async findBookmarkById(bookmarkId: number): Promise<Bookmark> {
-  //   if (isEmpty(bookmarkId)) throw new HttpException(400, 'BookmarkId is empty');
+  public async findBookmarkById(bookmarkId: number): Promise<Bookmark> {
+    if (isEmpty(bookmarkId)) throw new HttpException(400, 'BookmarkId is empty');
 
-  //   const findBookmark: Bookmark = await this.bookmarks.findByPk(bookmarkId);
-  //   if (!findBookmark) throw new HttpException(409, "Bookmark doesn't exist");
+    const findBookmark: Bookmark = await this.bookmarks.findByPk(bookmarkId, { include: [{ model: DB.Collection, as: 'collection' }] });
+    if (!findBookmark) throw new HttpException(409, "Bookmark doesn't exist");
 
-  //   return findBookmark;
-  // }
+    return findBookmark;
+  }
 
   public async createBookmark(bookmarkData: CreateBookmarkDto, collectionData: Collection): Promise<Bookmark> {
     if (isEmpty(collectionData)) throw new HttpException(400, 'collectionData is empty');
@@ -49,7 +49,7 @@ export class BookmarkService {
     const findBookmark: Bookmark = await this.bookmarks.findByPk(bookmarkId);
     if (!findBookmark) throw new HttpException(409, "Bookmark doesn't exist");
 
-    await this.bookmarks.destroy({ where: { id: bookmarkId } });
+    if (findBookmark.collection.collectionType == CollectionType.TRASH) await this.bookmarks.destroy({ where: { id: bookmarkId } });
 
     return findBookmark;
   }

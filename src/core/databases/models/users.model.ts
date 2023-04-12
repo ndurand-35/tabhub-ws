@@ -35,6 +35,9 @@ export default function (sequelize: Sequelize): typeof UserModel {
       sequelize,
     },
   );
-  UserModel.hasMany(CollectionModel, { sourceKey: 'id', foreignKey: 'userId', as: 'collections' });
   return UserModel;
+}
+
+export function buildUserAssociation() {
+  UserModel.hasMany(CollectionModel, { sourceKey: 'id', foreignKey: 'userId', as: 'collections' });
 }
